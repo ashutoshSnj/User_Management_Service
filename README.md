@@ -1,72 +1,46 @@
 # Work Done
 
 ## 1️⃣ User & UserProfile Module Creation
-First,  created the User and UserProfile modules.
 
-- **User module**: added basic user details like `username`, `email`, `password`, `role`.
-- **UserProfile module**: added profile details like `firstName`, `lastName`, `age`.
+First, I created the User and UserProfile modules.
+
+* In the User module, I added basic user details like username, email, password, and role.
+* In the UserProfile module, I added profile details like first name, last name, and age.
 
 Initially, these modules were independent.
 
 ## 2️⃣ One-to-One Relation Establishment
-Then,  established a one-to-one relation between User and UserProfile.
 
-**User entity**:
-```typescript
-@OneToOne(() => UserProfile, profile => profile.user, { cascade: true, onDelete: 'CASCADE' })
-profile: UserProfile;
-```
-
-**UserProfile entity**:
-```typescript
-@OneToOne(() => User, user => user.profile)
-@JoinColumn()
-user: User;
-```
+Then, I established a one-to-one relation between User and UserProfile.
 
 **Benefit**:
-- Each user has exactly one profile.
-- Cascade and delete automatically manage related profiles.
 
-## 3️⃣ Service Layer Testing
- explored and tested service files / business logic.
+* Each user has exactly one profile.
+* Related profiles are automatically managed during creation or deletion.
 
-- **UserService**: `create`, `findAll`, `findById`, `update`, `remove` methods.
-- **UserProfileService**: `create`, `findAll`, `findOne`, `update`, `remove` + advanced search methods.
+## 3️⃣ Service Layer and Business Logic Testing
 
- verified that methods returned expected results.
+I explored and tested the service layer and business logic methods.
+
+* In UserService, I created methods to add, find, update, and remove users.
+* In UserProfileService, I created methods to add, find, update, remove profiles, and perform advanced searches.
+
+I tested all service methods to ensure they return the expected results and handle errors correctly.
 
 ## 4️⃣ Password Encryption Hook
-For security, we added hooks in the User entity:
-```typescript
-@BeforeInsert()
-@BeforeUpdate()
-async hashPassword() {
-  if (this.password && !this.password.startsWith('$2')) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-  }
-}
-```
+
+For security, I added hooks to encrypt the password before saving or updating a user.
 
 **Benefit**:
-- Password stored encrypted in the database.
-- Avoids double hashing.
-- Easy password verification at login using `bcrypt.compare`.
+
+* Passwords are stored securely in the database.
+* Double hashing is avoided.
+* Password verification at login is easy.
 
 ## 5️⃣ TypeORM Queries Exploration
- explored advanced TypeORM search and query methods:
 
-**Find with `where` clause**:
-```typescript
-this.profileRepo.find({ where: { firstName }, relations: ['user'] });
-```
-
-**Native query**:
-```typescript
-this.profileRepo.query('SELECT * FROM user_profile WHERE firstName = ?', [firstName]);
-```
+I explored advanced TypeORM search and query methods.
 
 **Benefit**:
-- Enables complex searches and optimizations.
 
+* Allows performing complex searches and optimizations.
